@@ -1,84 +1,62 @@
-const LocalStrategy = require('passport-local').Strategy
-const KakaoStrategy = require('passport-kakao').Strategy
-var GoogleStrategy = require('passport-google-oauth20').Strategy
-const User = require("../../models/User")
-const bcrypt = require('bcrypt')
+const passport = require("passport")
+const passportJWT = require("passport-jwt")
+const bcrypt = require("bcrypt")
 const path = require('path')
 const dotenv = require('dotenv')
 
 dotenv.config({ path: path.join(__dirname, '../../.env') })
 
-exports.config = (passport) => {
-  console.log('startlogin')
-  passport.serializeUser((user, done) => {
-    done(null, user.email)
-  })
+const JWTStrategy = passportJWT.Strategy
+const { ExtractJwt } = passportJWT
+const LocalStrategy = require("passport-local").Strategy
+const User = require("../../models/User")
 
-  passport.deserializeUser((email, done) => {
-    const result = User.findOne({ email: email },(err, user) => {
-      if (err) return console.log(err)
-      done(null, user);
-    })
-  })
+const cookieExtractor = req => {
+  let jwt = null 
+  if (req && req.cookies) {
+      jwt = req.cookies['jwt']
+  }
+  return jwt
+}
 
-  passport.use(new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password',
-  }, (email, password, done) => {
-    const result = User.findOne({ email: email }, (err, user) => {
-      if (err) return console.log(err)
-      if (!user) {
-        done(null, false, { message: "Check your E-Mail"});
-      } else {
-        console.log(user.password)
-        console.log(password)
-        if (bcrypt.compareSync(password, user.password)) {
-          done(null, user)
-        } else {
-          done(null, false, { message: "Check your password"});
-        }
-      }
-    })
-  }))
+const LocalOption = {
+  usernameField: "email",
+  passwordField: "password"
+}
 
-  passport.use(new KakaoStrategy({
-    clientID: process.env.KAKAO_ID,
-    callbackURL: 'http://localhost:3000/auth/kakao/callback'
-  }, (accessToken, refreshToken, profile, done) => {
-    console.log(accessToken, refreshToken, profile, done)
-    User.findOne({ 'kakao.id': profile.id }, (err, user) => {
-      if (err) { return done(err) }
-      if (!user) {
-        user = new User({
-          name: profile.username,
-          username: profile.id,
-          email: profile._json.kakao_account.email,
-          roles: ['authenticated'],
-          provider: 'kakao',
-          kakao: profile._json,
-        })
+async function localVerify (email, password, done) {
+  let user
+  try {
+    user = await User.findOne({ email: email })
+    if (!user) return done(null, false)
+    const isSamePassword = await bcrypt.compare(password, user.password)
+    console.log(isSamePassword)
+    if (!isSamePassword) return done(null, false)
+  } catch (err) {
+    done(err)
+  }
+  console.log('auth ', user)
+  return done(null, user)
+}
 
-        user.save((err) => {
-          if (err) { console.log(err) }
-          return done(err, user)
-        })
-      } else {
-        return done(err, user)
-      }
-    })
-  }))
+const jwtOption = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  // jwtFromRequest: cookieExtractor,
+  secretOrKey: process.env.JWT_SECRET
+}
 
-  passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_ID,
-    clientSecret: process.env.GOOGLE_PASSWORD,
-    callbackURL: "http://localhost:3000/auth/google/callback"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    console.log(accessToken, refreshToken, profile, done)
-    done(null, profile)
-    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    //   return cb(err, user);
-    // });
-    }
-  ))
+async function jwtVerift (payload, done) {
+  let user
+  try {
+    user = await User.findOne({ email: payload.email })
+    if (!user) return done(null, false)
+    } catch (err) {
+      return done(err)
+  }
+  return done(null, user)
+}
+
+module.exports = () => {
+  passport.use(new LocalStrategy(LocalOption, localVerify))
+  passport.use(new JWTStrategy(jwtOption, jwtVerift))
 }

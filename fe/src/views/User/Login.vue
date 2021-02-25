@@ -126,7 +126,7 @@ export default {
     },
     submit () {
       if (this.valid) {
-        this.$axios.post('/auth/local', this.userInfo).then((res) => {
+        this.$axios.post('/auth/local', this.userInfo, { withCredentials: true }).then((res) => {
           console.log(res)
           this.$router.push('Home')
         }).catch((err) => {

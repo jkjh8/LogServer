@@ -17,12 +17,15 @@ export default {
     this.$store.commit('zones/updateZones', [])
     this.$store.commit('zones/updateZonesName', [])
     this.$store.dispatch('logs/changePage', { page: 1 })
-    this.$axios.get('/auth/user').then(async (res) => {
-      const data = res.data.user
+    const token = this.$cookie.get('jwt')
+    console.log(token)
+    this.$axios.get('/auth/user', { headers: { Authorization: `Bearer ${token}` } }).then(async (res) => {
+      const data = res.data
+      console.log(data)
       await this.$store.commit('user/updateUser', {
         admin: data.admin,
-        email: data.email,
-        properties: data.kakao.properties
+        email: data.email
+        // properties: data.kakao.properties
       })
     }).catch((err) => {
       console.log(err)
