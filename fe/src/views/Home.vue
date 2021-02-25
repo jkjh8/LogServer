@@ -17,9 +17,16 @@ export default {
     this.$store.commit('zones/updateZones', [])
     this.$store.commit('zones/updateZonesName', [])
     this.$store.dispatch('logs/changePage', { page: 1 })
-    console.log('get user')
-    this.$axios.get('/auth/user').then((res) => {
-      console.log(res)
+    this.$axios.get('/auth/user').then(async (res) => {
+      const data = res.data.user
+      await this.$store.commit('user/updateUser', {
+        admin: data.admin,
+        email: data.email,
+        properties: data.kakao.properties
+      })
+    }).catch((err) => {
+      console.log(err)
+      this.$router.push('/login')
     })
   },
   computed: {

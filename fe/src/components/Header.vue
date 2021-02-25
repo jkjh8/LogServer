@@ -62,7 +62,18 @@
         </v-tooltip>
       </div>
       <v-divider class="mx-3" inset vertical></v-divider>
-      <div>
+      <div v-if="!user">
+        <v-btn
+          height="45px"
+          depressed
+          dark
+          color="teal lighten-3"
+          @click="gotoLogin"
+        >
+          Login
+        </v-btn>
+      </div>
+      <div v-else>
         <v-btn
           height="45px"
           depressed
@@ -135,6 +146,7 @@ export default {
       }
     },
     ...mapState({
+      user: state => state.user.user,
       page: state => state.logs.zones,
       itemsPerPage: state => state.logs.itemsPerPage
     })

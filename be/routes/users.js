@@ -9,7 +9,7 @@ router.post('/auth/local', users.login)
 router.get('/auth/logout', users.logout)
 router.get('/auth/user', users.user)
 router.get('/auth/kakao', users.loginKakao)
-router.get('/auth/kakao/callback', passport.authenticate("kakao", { failureRedirect: "/" }), (req, res) => {res.redirect("/") })
+router.get('/auth/kakao/callback', passport.authenticate("kakao", { failureRedirect: "/login" }), (req, res) => {res.redirect("/") })
 
 router.get('/auth/google', users.loginGoogle)
 
