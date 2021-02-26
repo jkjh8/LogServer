@@ -47,7 +47,7 @@
           >
             <v-text-field
               class="my-3"
-              v-model="userInfo.email"
+              v-model="userInfo.id"
               :rules="rules.email"
               label="E-Mail Address"
               outlined
@@ -99,7 +99,7 @@ export default {
       show: false,
       remember: false,
       userInfo: {
-        email: '',
+        id: '',
         password: ''
       },
       rules: {

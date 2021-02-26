@@ -51,7 +51,7 @@ module.exports.login = function (req, res, next) {
     req.login(user, { session: false }, (error) => {
       if (error) next(error)
       const token = jwt.sign(
-        { email: user.email },
+        { id: user.id },
         process.env.JWT_SECRET,
         { expiresIn: '5m'}
       )

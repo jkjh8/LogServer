@@ -20,7 +20,7 @@ const cookieExtractor = req => {
 }
 
 const LocalOption = {
-  usernameField: "email",
+  usernameField: "id",
   passwordField: "password"
 }
 
@@ -48,7 +48,7 @@ const jwtOption = {
 async function jwtVerift (payload, done) {
   let user
   try {
-    user = await User.findOne({ email: payload.email })
+    user = await User.findOne({ id: payload.id })
     if (!user) return done(null, false)
     } catch (err) {
       return done(err)
