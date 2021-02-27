@@ -1,13 +1,5 @@
 const state = () => ({
-  user: {
-    admin: true,
-    email: 'jkjh82@daum.net',
-    properties: {
-      nickname: '강준호',
-      profile_image: 'http://k.kakaocdn.net/dn/bg8nhM/btqM4CdGcI0/mw4xCl27VW2UwNHCLQ1vFk/img_640x640.jpg',
-      thumbnail_image: 'http://k.kakaocdn.net/dn/bg8nhM/btqM4CdGcI0/mw4xCl27VW2UwNHCLQ1vFk/img_110x110.jpg'
-    }
-  }
+  user: null
 })
 
 const mutations = {

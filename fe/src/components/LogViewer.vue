@@ -105,6 +105,7 @@ export default {
   methods: {
     changePagePerItems (value) {
       this.$store.dispatch('logs/changeItemPerPage', value)
+      this.$store.dispatch('logs/changePage', { page: 1 })
     },
     async closeChips (idx) {
       const zones = this.$store.state.zones.zones

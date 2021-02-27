@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import LogView from '../views/LogView.vue'
 import Header from '../components/Header.vue'
 
 Vue.use(VueRouter)
@@ -20,6 +21,14 @@ const routes = [
     components: {
       layout: Header,
       default: Home
+    }
+  },
+  {
+    path: '/logview',
+    name: 'LogView',
+    components: {
+      layout: Header,
+      default: LogView
     }
   },
   {

@@ -62,15 +62,15 @@
         </v-tooltip>
       </div>
       <v-divider class="mx-3" inset vertical></v-divider>
-      <div v-if="!user">
+      <div v-if="user">
         <v-btn
           height="45px"
           depressed
           dark
           color="teal lighten-3"
-          @click="gotoLogin"
+          @click="logout"
         >
-          Login
+          Logout
         </v-btn>
       </div>
       <div v-else>
@@ -169,6 +169,13 @@ export default {
         this.value = 'Home'
       }
       this.dialog = false
+    },
+    async logout () {
+      this.$cookie.delete('accessToken')
+      this.$cookie.delete('refreshToken')
+      await this.$axios.get('/auth/logout')
+      this.$store.commit('user/updateUser', null)
+      this.$router.push('/login')
     }
   }
 }

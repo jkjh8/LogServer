@@ -2,6 +2,8 @@ const passport = require('passport')
 const User = require('../../models/User')
 const jwt = require('jsonwebtoken')
 
+const moment = require('moment')
+
 const path = require('path')
 const dotenv = require('dotenv')
 dotenv.config({ path: path.join(__dirname, '../../.env') })
@@ -15,7 +17,8 @@ module.exports.register = async function(req, res) {
     id: req.body.email,
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password
+    password: req.body.password,
+    provider: 'local'
   })
   user.save((err, user) => {
     if (err) {
@@ -27,44 +30,25 @@ module.exports.register = async function(req, res) {
   })
 }
 
-// module.exports.login = function(req, res, next) {
-//   console.log(req.body)
-//   passport.authenticate('local', (err, user, info) => {
-//     if (err) { return next(err) }
-//     if (!user) { return res.status(403).json(info) }
-//     return req.login(user, (err) => {
-//       if (err) { return next(err) }
-//       return res.status(200).json({ user })
-//     })
-//   }) (req, res, next)
-// }
-
 module.exports.login = function (req, res, next) {
   // console.log(req.body)
   passport.authenticate('local', { session: false }, (err, user) => {
-    if (err || !user) {
-      return res.status(400).json({
-        message: 'Something is not right',
-        user: user
-      })
-    }
+    if (err || !user) return res.status(400).json({ message: 'Error! user not found' })
     req.login(user, { session: false }, (error) => {
-      if (error) next(error)
-      const token = jwt.sign(
-        { id: user.id },
-        process.env.JWT_SECRET,
-        { expiresIn: '5m'}
-      )
-      res.cookie('jwt', token, { httpOnly: false, secure: false })
-      return res.status(200).json({ jwt: token })
-      // return res.json({ token })
+      if (error) return res.state(401).json({ message: error })
+      const rtObj = {
+        accessToken: jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '5m'}),
+        refreshToken: jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d'}),
+        user: user
+      }
+      return res.status(200).json(rtObj)
     })
   })(req, res)
 }
 
 module.exports.loginKakao = function(req, res, next) {
   console.log('start kakao')
-  passport.authenticate('kakao', (err, user, info) => {
+  passport.authenticate('kakao', { session: false }, (err, user, info) => {
     if (err) { return next(err) }
     if (!user) { return res.status(403).json(info) }
     return req.loginKakao(user, (err) => {
@@ -72,6 +56,13 @@ module.exports.loginKakao = function(req, res, next) {
       return res.status(200).json({ user })
     })
   }) (req, res, next)
+}
+
+module.exports.callbackKakao = function(req, res, next) {
+  passport.authenticate('kakao', { session: false, failureRedirect: 'http://localhost:8080/login'},
+  (err, user) => {
+    console.log(user)
+  })(req, res)
 }
 
 module.exports.loginGoogle = function(req, res, next) {
@@ -86,18 +77,26 @@ module.exports.loginGoogle = function(req, res, next) {
   }) (req, res, next)
 }
 
-// module.exports.user = function(req, res) {
-//   if (req.isAuthenticated() && req.user) {
-//     console.log(req.user)
-//     return res.status(200).json({ user: req.user });
-//   }
-//   return res.status(403).json({ user: null })
-// }
-
 module.exports.user = function(req, res) {
-  passport.authenticate('jwt', { session: false }, (err, user) => {
-    console.log('jwt', user)
-    res.json(user)
+  passport.authenticate('access', { session: false }, (err, user) => {
+    if (err) return res.status(403).json({ user: null })
+    res.status(200).json({ user: user })
+  })(req, res)
+}
+
+module.exports.refresh = function(req, res) {
+  passport.authenticate('refresh', { session: false }, (err, user, payload) => {
+    if (err||!user) return res.status(403).json({ user: null })
+    const time1 = moment()
+    const time2 = moment(payload.exp * 1000)
+    console.log('user = ', user)
+    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '5m'})
+    
+    if (moment.duration(time2.diff(time1)).asDays() < 1) {
+      const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d'})
+      return res.status(200).json({ refreshToken: refreshToken, accessToken: accessToken, user: user })
+    }
+    res.status(200).json({ accessToken: accessToken, user: user })
   })(req, res)
 }
 
