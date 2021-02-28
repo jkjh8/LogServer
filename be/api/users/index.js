@@ -72,6 +72,7 @@ module.exports.loginKakao = async function(req, res, next) {
       refreshToken: jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d'}),
       user: user
     }
+    if (user.block) return res.status(403).json({ user: false })
     return res.status(200).json(rtObj)
   } catch (err) {
     res.status(403).json({ error: err })
@@ -93,8 +94,8 @@ module.exports.loginGoogle = function(req, res, next) {
 
 module.exports.user = function(req, res) {
   passport.authenticate('access', { session: false }, (err, user) => {
-    console.log('user', user)
     if (err) return res.status(403).json({ user: null })
+    if (user.block) return res.status(403).json({ user: null })
     res.status(200).json({ user: user })
   })(req, res)
 }
