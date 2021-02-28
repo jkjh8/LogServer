@@ -4,12 +4,16 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const cors = require('cors')
+
+// const history = require('connect-history-api-fallback')
+
 const session = require('express-session')
 const passport = require('passport')
 const mongoose = require('mongoose')
 const MongoStore = require('connect-mongo')(session)
 const db = require('./db')
 const server = require('./server')
+const textServer = require('./textServer')
 
 // require('./api/passport').config(passport)
 const passportConfig = require('./api/passport')

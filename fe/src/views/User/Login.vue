@@ -114,15 +114,15 @@ export default {
       kakaoKey: ''
     }
   },
-  async beforeCreate () {
-    const scriptKakao = document.createElement('script')
-    scriptKakao.setAttribute('type', 'text/javascript')
-    scriptKakao.src = 'https://developers.kakao.com/sdk/js/kakao.js'
-    scriptKakao.async = true
-    document.getElementsByTagName('head')[0].appendChild(scriptKakao)
-    const key = await this.$axios.get('/auth/kakaokey')
-    window.Kakao.init(key.data.key)
-  },
+  // async created () {
+  //   const scriptKakao = document.createElement('script')
+  //   scriptKakao.setAttribute('type', 'text/javascript')
+  //   scriptKakao.src = 'https://developers.kakao.com/sdk/js/kakao.js'
+  //   scriptKakao.async = true
+  //   document.getElementsByTagName('head')[0].appendChild(scriptKakao)
+  //   const key = await this.$axios.get('/auth/kakaokey')
+  //   window.Kakao.init(key.data.key)
+  // },
   methods: {
     loginKakao () {
       // this.$axios.get('/auth/kakao', { headers: { 'Access-Control-Allow-Origin': '*' } }).then(res => {

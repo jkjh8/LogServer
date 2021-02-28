@@ -63,46 +63,108 @@
       </div>
       <v-divider class="mx-3" inset vertical></v-divider>
       <div class="d-flex nowarp" v-if="user">
-        <v-btn
+        <v-menu
           v-if="user.provider === 'kakao'"
-          class="mx-3"
-          icon
-          @click="account"
+          bottom
+          rounded
+          min-width="200px"
+          offset-y
         >
-          <v-avatar
-            color="teal lighten-3"
-            size="45"
-          >
-            <img
-              :src="user.kakao.properties.thumbnail_image"
-              alt="User"
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              x-large
+              v-on="on"
             >
-          </v-avatar>
-        </v-btn>
-        <v-btn
-          v-else
-          class="mx-3"
-          icon
-          @click="account"
-        >
-          <v-avatar
-            class="mx-3"
-            color="teal lighten-3"
-            size="45"
-          >
-            <span class="white--text">{{ userNick }}</span>
-          </v-avatar>
-        </v-btn>
+              <v-avatar>
+                <v-avatar
+                  color="teal lighten-3"
+                  size="45"
+                >
+                  <img
+                    :src="user.kakao.properties.thumbnail_image"
+                    alt="User"
+                  >
+                </v-avatar>
+              </v-avatar>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list-item-content class="justify-center">
+              <div class="mx-auto text-center">
+                <v-avatar
+                  color="teal lighten-3"
+                  size="60"
+                >
+                  <img
+                    :src="user.kakao.properties.thumbnail_image"
+                    alt="User"
+                  >
+                </v-avatar>
+                <h3 class="mt-3">{{ user.name }}</h3>
+                <p class="caption mt-1">{{ user.email }}</p>
+                <v-btn
+                  height="45px"
+                  depressed
+                  dark
+                  rounded
+                  color="teal lighten-3"
+                  @click="logout"
+                >
+                  Logout
+                </v-btn>
+              </div>
+            </v-list-item-content>
+          </v-card>
+        </v-menu>
 
-        <v-btn
-          height="45px"
-          depressed
-          dark
-          color="teal lighten-3"
-          @click="logout"
+        <v-menu
+          v-else
+          bottom
+          rounded
+          min-width="200px"
+          offset-y
         >
-          Logout
-        </v-btn>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              x-large
+              v-on="on"
+            >
+              <v-avatar>
+                <v-avatar
+                  color="teal lighten-3"
+                  size="45"
+                >
+                  <span class="white--text">{{ userNick }}</span>
+                </v-avatar>
+              </v-avatar>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-list-item-content class="justify-center">
+              <div class="mx-auto text-center">
+                <v-avatar
+                  color="teal lighten-3"
+                  size="60"
+                >
+                  <h2 class="white--text text-uppercase">{{ userNick }}</h2>
+                </v-avatar>
+                <p class="caption mt-1">{{ user.email }}</p>
+                <v-btn
+                  height="45px"
+                  depressed
+                  dark
+                  rounded
+                  color="teal lighten-3"
+                  @click="logout"
+                >
+                  Logout
+                </v-btn>
+              </div>
+            </v-list-item-content>
+          </v-card>
+        </v-menu>
       </div>
       <div v-else>
         <v-btn

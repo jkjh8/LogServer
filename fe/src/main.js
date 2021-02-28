@@ -12,6 +12,10 @@ axios.defaults.baseURL = 'http://' + window.location.hostname + ':3000'
 Vue.prototype.$axios = axios
 Vue.use(VueCookie)
 
+axios.get('/auth/kakaokey').then((res) => {
+  window.Kakao.init(res.data.key)
+})
+
 new Vue({
   router,
   store,
