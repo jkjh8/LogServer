@@ -82,7 +82,7 @@
                   size="45"
                 >
                   <img
-                    :src="user.kakao.properties.thumbnail_image"
+                    :src="user.kakao.profile.thumbnail_image_url"
                     alt="User"
                   >
                 </v-avatar>
@@ -97,7 +97,7 @@
                   size="60"
                 >
                   <img
-                    :src="user.kakao.properties.thumbnail_image"
+                    :src="user.kakao.profile.thumbnail_image_url"
                     alt="User"
                   >
                 </v-avatar>

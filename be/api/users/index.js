@@ -47,19 +47,25 @@ module.exports.login = function (req, res, next) {
 }
 
 module.exports.loginKakao = async function(req, res, next) {
+  let user
   const profile = req.body
   try {
-    const user = await User.findOne({ 'kakao.id': profile.id })
+    user = await User.findOne({ id: profile.id })
+    console.log(user)
     if (!user) {
+      console.log('not user')
+      console.log(profile.kakao_account.email)
       user = new User({
         id: profile.id,
-        name: profile.username,
+        name: profile.properties.nickname,
         username: profile.id,
-        email: profile._json.kakao_account.email,
+        email: profile.kakao_account.email,
         roles: ['authenticated'],
         provider: 'kakao',
-        kakao: profile._json
+        kakao: profile.kakao_account,
+        block: false
       })
+      console.log('1')
       user.save(err => {
         if (err) {
           console.log(err)
@@ -75,6 +81,7 @@ module.exports.loginKakao = async function(req, res, next) {
     if (user.block) return res.status(403).json({ user: false })
     return res.status(200).json(rtObj)
   } catch (err) {
+    console.log(err)
     res.status(403).json({ error: err })
   }
 }
@@ -94,8 +101,8 @@ module.exports.loginGoogle = function(req, res, next) {
 
 module.exports.user = function(req, res) {
   passport.authenticate('access', { session: false }, (err, user) => {
-    if (err) return res.status(403).json({ user: null })
-    if (user.block) return res.status(403).json({ user: null })
+    if (err) { return res.status(403).json({ user: null }) }
+    if (user.block) { return res.status(403).json({ user: null }) }
     res.status(200).json({ user: user })
   })(req, res)
 }
