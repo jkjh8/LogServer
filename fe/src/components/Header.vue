@@ -62,7 +62,38 @@
         </v-tooltip>
       </div>
       <v-divider class="mx-3" inset vertical></v-divider>
-      <div v-if="user">
+      <div class="d-flex nowarp" v-if="user">
+        <v-btn
+          v-if="user.provider === 'kakao'"
+          class="mx-3"
+          icon
+          @click="account"
+        >
+          <v-avatar
+            color="teal lighten-3"
+            size="45"
+          >
+            <img
+              :src="user.kakao.properties.thumbnail_image"
+              alt="User"
+            >
+          </v-avatar>
+        </v-btn>
+        <v-btn
+          v-else
+          class="mx-3"
+          icon
+          @click="account"
+        >
+          <v-avatar
+            class="mx-3"
+            color="teal lighten-3"
+            size="45"
+          >
+            <span class="white--text">{{ userNick }}</span>
+          </v-avatar>
+        </v-btn>
+
         <v-btn
           height="45px"
           depressed
@@ -149,7 +180,10 @@ export default {
       user: state => state.user.user,
       page: state => state.logs.zones,
       itemsPerPage: state => state.logs.itemsPerPage
-    })
+    }),
+    userNick () {
+      return this.user.id.slice(0, 2)
+    }
   },
   methods: {
     searchUp () {
@@ -176,6 +210,9 @@ export default {
       await this.$axios.get('/auth/logout')
       this.$store.commit('user/updateUser', null)
       this.$router.push('/login')
+    },
+    account () {
+      console.log('click avatar')
     }
   }
 }

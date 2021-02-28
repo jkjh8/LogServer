@@ -25,6 +25,7 @@
               <div>Login with KAKAO</div>
             </div>
           </v-btn>
+          <!--
           <v-btn
             class="mt-3"
             outlined
@@ -35,6 +36,7 @@
           >
             <div>Login with GOOGLE</div>
           </v-btn>
+          -->
         </div>
         <div class="my-2">
           Or use your email account
@@ -112,16 +114,14 @@ export default {
       kakaoKey: ''
     }
   },
-  async created () {
+  async beforeCreate () {
     const scriptKakao = document.createElement('script')
     scriptKakao.setAttribute('type', 'text/javascript')
     scriptKakao.src = 'https://developers.kakao.com/sdk/js/kakao.js'
     scriptKakao.async = true
     document.getElementsByTagName('head')[0].appendChild(scriptKakao)
-    console.log(scriptKakao)
     const key = await this.$axios.get('/auth/kakaokey')
     window.Kakao.init(key.data.key)
-    console.log(window.Kakao.isInitialized())
   },
   methods: {
     loginKakao () {
@@ -139,54 +139,29 @@ export default {
         url: '/v2/user/me',
         success: res => {
           console.log(res)
-          //     const userInfo = {
-          //         nickname : kakao_account.profile.nickname,
-          //         email : kakao_account.email,
-          //         password : '',
-          //         account_type : 2,
-          //     }
-
-          //       axios.post(`http://localhost:8080/account/kakao`,{
-          //           email : userInfo.email,
-          //           nickname : userInfo.nickname
-          //       })
-          //       .then(res => {
-          //         console.log(res);
-          //         console.log("데이터베이스에 회원 정보가 있음!");
-          //       })
-          //       .catch(err => {
-          //           console.log(err);
-          //         console.log("데이터베이스에 회원 정보가 없음!");
-          //       })
-          //     console.log(userInfo);
-          //     alert("로그인 성공!");
-          //     this.$bvModal.hide("bv-modal-example");
-          // },
-          // fail : error => {
-          //     this.$router.push("/errorPage");
-          //     console.log(error);
-          // }
+          this.$axios.post('auth/kakao', res).then(result => {
+            this.updateUserInfonCookie(result.data)
+          })
         }
       })
     },
     loginGoogle () {
-      // this.$axios.get('/auth/google', { headers: { 'Access-Control-Allow-Origin': '*' } }).then(res => {
-      //   console.log(res)
-      // })
       window.location.href = `http://${window.location.hostname}:3000/auth/google`
     },
     submit () {
       if (this.valid) {
         this.$axios.post('/auth/local', this.userInfo).then((res) => {
           console.log(res.data)
-          this.$cookie.set('accessToken', res.data.accessToken)
-          this.$cookie.set('refreshToken', res.data.refreshToken)
-          // this.$store.commit('user/updateUser', res.data.user)
-          this.$router.push('Home')
+          this.updateUserInfonCookie(res.data)
         }).catch((err) => {
           alert(err.response.data.message)
         })
       }
+    },
+    updateUserInfonCookie (data) {
+      this.$cookie.set('accessToken', data.accessToken)
+      this.$cookie.set('refreshToken', data.refreshToken)
+      this.$router.push('Home')
     },
     async onSuccess (data) {
       console.log('success', data.access_token)

@@ -46,24 +46,38 @@ module.exports.login = function (req, res, next) {
   })(req, res)
 }
 
-module.exports.loginKakao = function(req, res, next) {
-  console.log('start kakao')
-  passport.authenticate('kakao', { session: false }, (err, user, info) => {
-    if (err) { return next(err) }
-    if (!user) { return res.status(403).json(info) }
-    return req.loginKakao(user, (err) => {
-      if (err) { return next(err) }
-      return res.status(200).json({ user })
-    })
-  }) (req, res, next)
+module.exports.loginKakao = async function(req, res, next) {
+  const profile = req.body
+  try {
+    const user = await User.findOne({ 'kakao.id': profile.id })
+    if (!user) {
+      user = new User({
+        id: profile.id,
+        name: profile.username,
+        username: profile.id,
+        email: profile._json.kakao_account.email,
+        roles: ['authenticated'],
+        provider: 'kakao',
+        kakao: profile._json
+      })
+      user.save(err => {
+        if (err) {
+          console.log(err)
+          return res.statue(500).json({ result: 'err', message: '사용자를 추가 할 수 없습니다.' })
+        }
+      })
+    }
+    const rtObj = {
+      accessToken: jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '5m'}),
+      refreshToken: jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d'}),
+      user: user
+    }
+    return res.status(200).json(rtObj)
+  } catch (err) {
+    res.status(403).json({ error: err })
+  }
 }
 
-module.exports.callbackKakao = function(req, res, next) {
-  passport.authenticate('kakao', { session: false, failureRedirect: 'http://localhost:8080/login'},
-  (err, user) => {
-    console.log(user)
-  })(req, res)
-}
 
 module.exports.loginGoogle = function(req, res, next) {
   console.log('start google')
@@ -79,6 +93,7 @@ module.exports.loginGoogle = function(req, res, next) {
 
 module.exports.user = function(req, res) {
   passport.authenticate('access', { session: false }, (err, user) => {
+    console.log('user', user)
     if (err) return res.status(403).json({ user: null })
     res.status(200).json({ user: user })
   })(req, res)
