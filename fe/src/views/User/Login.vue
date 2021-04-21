@@ -7,7 +7,7 @@
       </v-card-title>
       <v-card-text>
         <div>
-          <v-btn
+          <!-- <v-btn
             outlined
             rounded
             width="100%"
@@ -24,7 +24,7 @@
                 </div>
               <div>Login with KAKAO</div>
             </div>
-          </v-btn>
+          </v-btn> -->
           <!--
           <v-btn
             class="mt-3"
@@ -138,7 +138,6 @@ export default {
       window.Kakao.API.request({
         url: '/v2/user/me',
         success: res => {
-          console.log(res)
           this.$axios.post('auth/kakao', res).then(result => {
             this.updateUserInfonCookie(result.data)
           })
@@ -151,7 +150,6 @@ export default {
     submit () {
       if (this.valid) {
         this.$axios.post('/auth/local', this.userInfo).then((res) => {
-          console.log(res.data)
           this.updateUserInfonCookie(res.data)
         }).catch((err) => {
           alert(err.response.data.message)

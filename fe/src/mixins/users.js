@@ -12,6 +12,10 @@ export const users = {
 
       const rtData = await this.$axios.get('/auth/user', headers)
       if (rtData.data.user) {
+        if (!rtData.data.user.enable) {
+          return this.$router.push('/login')
+          // return alert('인증되지 않은 사용자 입니다.')
+        }
         return this.$store.commit('user/updateUser', rtData.data.user)
       }
 
@@ -28,6 +32,9 @@ export const users = {
       }
       const rtData = await this.$axios.get('/auth/refresh', headers)
       if (rtData.data.user) {
+        if (!rtData.data.user.enable) {
+          return alert('인증되지 않은 사용자 입니다.')
+        }
         this.$store.commit('user/updateUser', rtData.data.user)
       }
       if (rtData.data.refreshToken) {

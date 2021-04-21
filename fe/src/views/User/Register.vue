@@ -114,6 +114,7 @@ export default {
           alert(err.reponse.data.message)
         })
       }
+      this.$router.push('/')
     }
   }
 }

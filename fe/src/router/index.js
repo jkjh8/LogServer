@@ -40,7 +40,7 @@ const routes = [
     }
   },
   {
-    path: '/register',
+    path: '/Register',
     name: 'Register',
     components: {
       layout: () => import('../components/HeaderLogin.vue'),

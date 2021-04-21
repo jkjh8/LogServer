@@ -23,7 +23,7 @@ textServer.on('message', function(msg, remote) {
     const message = msg.toString().split(',')
     const logMsg = new dbLogs({
       source: zones[message[0]].name,
-      category: 'Error',
+      category: 'info',
       zones: [zones[message[0]].name],
       message: message[1]
     })
