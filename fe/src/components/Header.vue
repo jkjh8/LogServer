@@ -38,10 +38,19 @@
           class="mx-1"
           height="45px"
           text
-          @click="dialog=true"
+          @click="zoneSelOpen"
           :style="value === 'Zones' ? 'font-weight: bold; color: black;': 'font-weigth: nomal; color: gray;'"
         >
           Zones
+        </v-btn>
+        <v-btn
+          class="mx-1"
+          height="45px"
+          text
+          @click="gotoData"
+          :style="value === 'Data' ? 'font-weight: bold; color: black;': 'font-weigth: nomal; color: gray;'"
+        >
+          Data
         </v-btn>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
@@ -253,6 +262,10 @@ export default {
     },
     reload () {
       this.$store.dispatch('logs/changePage', { page: this.$store.state.logs.page })
+    },
+    zoneSelOpen () {
+      this.gotoHome()
+      this.dialog = true
     },
     zoneSel (zones) {
       console.log(zones)

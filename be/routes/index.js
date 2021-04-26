@@ -8,8 +8,10 @@ router.get('/', function(req, res, next) {
 
 const log = require('./log')
 const user = require('./users')
+const data = require('./data')
 
 router.use(log)
 router.use(user)
+router.use(data)
 
 module.exports = router;
