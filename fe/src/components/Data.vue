@@ -63,7 +63,7 @@ export default {
     async add () {
       console.log('add')
       const id = this.items.length + 1
-      await this.$axios.post('api/addZone', { id: id, name: '', children: [] })
+      await this.$axios.post('api/addZone', { id: id, name: '', code: '', children: [] })
       this.getItems()
     }
   }

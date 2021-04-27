@@ -14,6 +14,7 @@ module.exports.addZone = async function(req, res) {
   const zone = new dbData({
     id: r.id,
     name: r.name,
+    code: r.code,
     children: r.children
   })
   await zone.save()
@@ -24,7 +25,7 @@ module.exports.addZone = async function(req, res) {
 module.exports.updateName = async function(req, res) {
   const r = req.body
   console.log(r)
-  const rd = await dbData.update({ id: r.id }, { $set: { name: r.name } })
+  const rd = await dbData.update({ id: r.id }, { $set: { name: r.name, code: r.code } })
   console.log(rd)
   const items = await dbData.find({})
   return res.status(200).json({ data: items })

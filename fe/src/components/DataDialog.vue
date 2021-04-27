@@ -74,7 +74,7 @@ export default {
   methods: {
     updateName () {
       const name = this.items[this.currentId - 1].name
-      this.$axios.post('/api/updateName', { id: this.currentId, name: this.strEncodeUTF16(name) })
+      this.$axios.post('/api/updateName', { id: this.currentId, name: name, code: this.strEncodeUTF16(name) })
     },
     update (idx, evt) {
       this.$store.commit('data/changeChildren', { id: idx, name: evt })
@@ -83,13 +83,6 @@ export default {
     changeId (idx) {
       console.log(idx)
       this.$store.commit('data/updateId', idx)
-    },
-    string2Bin (str) {
-      const result = []
-      for (let i = 0; i < str.length; i++) {
-        result.push(str.charCodeAt(i).toString(2))
-      }
-      return result
     },
     strEncodeUTF16 (str) {
       const arr = []
