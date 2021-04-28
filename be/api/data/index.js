@@ -16,7 +16,7 @@ module.exports.addZone = async function(req, res) {
     name: r.name,
     code: r.code,
     children: r.children,
-    relay: ''
+    relay: []
   })
   await zone.save()
   const items = await dbData.find({})
@@ -38,4 +38,12 @@ module.exports.updateZone = async function(req, res) {
   console.log(id, zone)
 
   const r = await dbData.update({ id: id }, { $set: { children: zone } })
+}
+
+module.exports.updateRelay = async function(req, res) {
+  const id = req.body.id
+  const relay = req.body.relay
+  console.log(id, relay)
+
+  const r = await dbData.update({ id: id }, { $set: { realy: relay } })
 }

@@ -14,6 +14,13 @@
             <v-btn
               v-if="item.id"
               icon
+              @click="relay(item.id)"
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn
+              v-if="item.id"
+              icon
               @click="rename(item.id)"
             >
               <v-icon>mdi-pencil</v-icon>
@@ -22,10 +29,11 @@
         </v-treeview>
       </v-card-text>
     </v-card>
-    <v-dialog
-      v-model="dialog"
-    >
+    <v-dialog v-model="dialog">
       <DataDialog :items="items" @close="dialog = false" />
+    </v-dialog>
+    <v-dialog v-model="dialogRelay">
+      <RelayDialog :items="items" @close="dialogRelay = false" />
     </v-dialog>
 
   </v-container>
@@ -33,10 +41,11 @@
 
 <script>
 import DataDialog from './DataDialog'
+import RelayDialog from './RelayDialog'
 
 export default {
   components: {
-    DataDialog
+    DataDialog, RelayDialog
   },
   mounted () {
     this.getItems()
@@ -45,6 +54,7 @@ export default {
     return {
       sel: [],
       dialog: false,
+      dialogRelay: false,
       items: []
     }
   },
@@ -58,6 +68,10 @@ export default {
       console.log(id)
       this.$store.commit('data/updateId', id)
       this.dialog = true
+    },
+    relay (id) {
+      this.$store.commit('data/updateId', id)
+      this.dialogRelay = true
     },
     async add () {
       console.log('add')
