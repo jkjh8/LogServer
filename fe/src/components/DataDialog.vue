@@ -52,6 +52,11 @@
           <div>
             {{ item.code }}
           </div>
+          <div class="ml-6">
+            <v-btn icon @click="delZone(idx)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </div>
         </v-list-item>
       </v-list>
     </v-card-text>
@@ -103,8 +108,15 @@ export default {
       this.items[this.currentId - 1].children[idx].name = evt
       this.items[this.currentId - 1].children[idx].code = this.strEncodeUTF16(evt)
     },
+    delZone (idx) {
+      this.items[this.currentId - 1].children.splice(idx, 1)
+      this.items[this.currentId - 1].children.forEach((item, idx) => {
+        item.idx = idx
+      })
+    },
     completed () {
       this.$axios.post('/api/updateZone', { id: this.currentId, zone: this.items[this.currentId - 1].children })
+      this.$emit('close')
     },
     changeId (idx) {
       console.log(idx)

@@ -15,7 +15,8 @@ module.exports.addZone = async function(req, res) {
     id: r.id,
     name: r.name,
     code: r.code,
-    children: r.children
+    children: r.children,
+    relay: ''
   })
   await zone.save()
   const items = await dbData.find({})
