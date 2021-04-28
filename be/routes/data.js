@@ -7,5 +7,6 @@ const data = require('../api/data')
 router.get('/api/getdata', data.getData)
 router.post('/api/addZone', data.addZone)
 router.post('/api/updateName', data.updateName)
+router.post('/api/updateZone', data.updateZone)
 
 module.exports = router

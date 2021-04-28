@@ -19,8 +19,12 @@
           @keyup.enter="updateName"
         ></v-text-field>
       </div>
+      <div class="mx-6">code</div>
+      <div>
+        {{ items[currentId - 1].code }}
+      </div>
       <v-spacer />
-      <v-btn icon @click="$store.commit('data/addChildren')">
+      <v-btn icon @click="addChildren">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </v-card-title>
@@ -30,9 +34,11 @@
           v-for="(item, idx) in items[currentId - 1].children"
           :key="idx"
         >
+          <div>Channel</div>
           <div class="mx-6">
             {{ idx + 1 }}
           </div>
+          <div class="mx-6">Name</div>
           <div>
             <v-text-field
               :value="item.name"
@@ -40,12 +46,18 @@
             >
             </v-text-field>
           </div>
+          <div class="mx-6">
+            Code
+          </div>
+          <div>
+            {{ item.code }}
+          </div>
         </v-list-item>
       </v-list>
     </v-card-text>
     <v-card-actions class="d-flex flex-row-reverse">
-      <v-btn class="ma-2" dark width="180" height="45" color="pink darken-1" depressed>Accept</v-btn>
-      <v-btn class="ma-2" width="180" height="45" color="blue-grey lighten-5" depressed>Decline</v-btn>
+      <v-btn class="ma-2" dark width="180" height="45" color="pink darken-1" depressed @click="completed">Accept</v-btn>
+      <v-btn class="ma-2" width="180" height="45" color="blue-grey lighten-5" depressed @click="$emit('close')">Decline</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -76,9 +88,23 @@ export default {
       const name = this.items[this.currentId - 1].name
       this.$axios.post('/api/updateName', { id: this.currentId, name: name, code: this.strEncodeUTF16(name) })
     },
+    addChildren () {
+      const id = this.items[this.currentId - 1].children.length
+      this.items[this.currentId - 1].children.push({
+        idx: id,
+        name: '',
+        code: ''
+      })
+    },
     update (idx, evt) {
-      this.$store.commit('data/changeChildren', { id: idx, name: evt })
+      // this.$store.commit('data/changeChildren', { id: idx, name: evt })
       // this.items[this.curitem.id - 1].children[idx].name = evt
+      console.log(idx, evt)
+      this.items[this.currentId - 1].children[idx].name = evt
+      this.items[this.currentId - 1].children[idx].code = this.strEncodeUTF16(evt)
+    },
+    completed () {
+      this.$axios.post('/api/updateZone', { id: this.currentId, zone: this.items[this.currentId - 1].children })
     },
     changeId (idx) {
       console.log(idx)

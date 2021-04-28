@@ -29,5 +29,12 @@ module.exports.updateName = async function(req, res) {
   console.log(rd)
   const items = await dbData.find({})
   return res.status(200).json({ data: items })
-  
+}
+
+module.exports.updateZone = async function(req, res) {
+  const id = req.body.id
+  const zone = req.body.zone
+  console.log(id, zone)
+
+  const r = await dbData.update({ id: id }, { $set: { children: zone } })
 }

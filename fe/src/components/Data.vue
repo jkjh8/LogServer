@@ -24,9 +24,8 @@
     </v-card>
     <v-dialog
       v-model="dialog"
-      max-width="600px"
     >
-      <DataDialog :items="items" />
+      <DataDialog :items="items" @close="dialog = false" />
     </v-dialog>
 
   </v-container>
