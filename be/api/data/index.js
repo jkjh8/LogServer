@@ -45,5 +45,5 @@ module.exports.updateRelay = async function(req, res) {
   const relay = req.body.relay
   console.log(id, relay)
 
-  const r = await dbData.update({ id: id }, { $set: { realy: relay } })
+  const r = await dbData.update({ id: id }, { $set: { relay: relay } })
 }

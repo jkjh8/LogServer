@@ -1,27 +1,11 @@
 <template>
   <v-card>
     <v-card-title>
-      <div class="ml-6">ID</div>
-      <div
-        class="px-3 mr-6"
-        style="width: 100px"
-      >
-        <v-combobox
-          :items="id"
-          :value="currentId"
-          @change="changeId"
-        ></v-combobox>
-      </div>
-      <div class="mx-6">Name</div>
       <div>
-        <v-text-field
-          v-model="items[currentId - 1].name"
-          @keyup.enter="updateName"
-        ></v-text-field>
+        {{ items[currentId - 1].name }}
       </div>
-      <div class="mx-6">code</div>
-      <div>
-        {{ items[currentId - 1].code }}
+      <div class="mx-3">
+        Zones
       </div>
       <v-spacer />
       <v-btn icon @click="addChildren">
@@ -39,7 +23,7 @@
             {{ idx + 1 }}
           </div>
           <div class="mx-6">Name</div>
-          <div>
+          <div style="width: 150px;">
             <v-text-field
               :value="item.name"
               @change="update(idx, $event)"

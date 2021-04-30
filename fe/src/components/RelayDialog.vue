@@ -1,23 +1,11 @@
 <template>
   <v-card>
     <v-card-title>
-      <div class="ml-6">ID</div>
-      <div
-        class="px-3 mr-6"
-        style="width: 100px"
-      >
-        <v-combobox
-          :items="id"
-          :value="currentId"
-          @change="changeId"
-        ></v-combobox>
-      </div>
-      <div class="mx-6">Name</div>
       <div>
-        <v-text-field
-          v-model="items[currentId - 1].name"
-          @keyup.enter="updateName"
-        ></v-text-field>
+        {{ items[currentId - 1].name }}
+      </div>
+      <div class="mx-3">
+        Relays
       </div>
       <v-spacer />
       <v-btn icon @click="addRelay">
@@ -85,10 +73,6 @@ export default {
     }
   },
   methods: {
-    updateName () {
-      const name = this.items[this.currentId - 1].name
-      this.$axios.post('/api/updateName', { id: this.currentId, name: name, code: this.strEncodeUTF16(name) })
-    },
     addRelay () {
       const id = this.items[this.currentId - 1].relay.length
       this.items[this.currentId - 1].relay.push({
@@ -111,7 +95,8 @@ export default {
       })
     },
     completed () {
-      this.$axios.post('/api/updateRelay', { id: this.currentId, zone: this.items[this.currentId - 1].relay })
+      console.log(this.items[this.currentId - 1].relay)
+      this.$axios.post('/api/updateRelay', { id: this.currentId, relay: this.items[this.currentId - 1].relay })
       this.$emit('close')
     },
     changeId (idx) {

@@ -13,26 +13,36 @@
           <template v-slot:append="{ item }">
             <v-btn
               v-if="item.id"
-              icon
-              @click="relay(item.id)"
+              text
+              @click="name(item.id)"
             >
-              <v-icon>mdi-pencil</v-icon>
+              Name
             </v-btn>
             <v-btn
               v-if="item.id"
-              icon
-              @click="rename(item.id)"
+              text
+              @click="relay(item.id)"
             >
-              <v-icon>mdi-pencil</v-icon>
+              Relay
+            </v-btn>
+            <v-btn
+              v-if="item.id"
+              text
+              @click="zone(item.id)"
+            >
+              Zone
             </v-btn>
           </template>
         </v-treeview>
       </v-card-text>
     </v-card>
-    <v-dialog v-model="dialog">
-      <DataDialog :items="items" @close="dialog = false" />
+    <v-dialog v-model="dialogName" max-width="800px">
+      <NameDialog :items="items" @close="dialogName = false" @add="add" />
     </v-dialog>
-    <v-dialog v-model="dialogRelay">
+    <v-dialog v-model="dialogZone" max-width="800px">
+      <DataDialog :items="items" @close="dialogZone = false" />
+    </v-dialog>
+    <v-dialog v-model="dialogRelay" max-width="800px">
       <RelayDialog :items="items" @close="dialogRelay = false" />
     </v-dialog>
 
@@ -40,12 +50,13 @@
 </template>
 
 <script>
+import NameDialog from './NameDialog'
 import DataDialog from './DataDialog'
 import RelayDialog from './RelayDialog'
 
 export default {
   components: {
-    DataDialog, RelayDialog
+    NameDialog, DataDialog, RelayDialog
   },
   mounted () {
     this.getItems()
@@ -53,7 +64,8 @@ export default {
   data () {
     return {
       sel: [],
-      dialog: false,
+      dialogName: false,
+      dialogZone: false,
       dialogRelay: false,
       items: []
     }
@@ -64,10 +76,14 @@ export default {
       this.items = rt.data.data
       console.log(this.items)
     },
-    rename (id) {
+    name (id) {
+      this.$store.commit('data/updateId', id)
+      this.dialogName = true
+    },
+    zone (id) {
       console.log(id)
       this.$store.commit('data/updateId', id)
-      this.dialog = true
+      this.dialogZone = true
     },
     relay (id) {
       this.$store.commit('data/updateId', id)
