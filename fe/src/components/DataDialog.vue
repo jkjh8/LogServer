@@ -147,7 +147,7 @@ export default {
         arr[i] = str.charCodeAt(i)
       }
       arr.forEach(num => {
-        hexstr.push(this.decimalToHexString(num))
+        hexstr.push(this.fillZero(this.decimalToHexString(num)))
       })
       console.log(hexstr)
       return hexstr.join('')
@@ -157,7 +157,11 @@ export default {
       if (number < 0) {
         number = 0xFFFFFFFF + number + 1
       }
+      console.log(number)
       return number.toString(16).toUpperCase()
+    },
+    fillZero (str) {
+      return str.length >= 4 ? str : new Array(4 - str.length + 1).join('0') + str
     }
   }
 }
