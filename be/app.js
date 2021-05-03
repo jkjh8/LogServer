@@ -47,5 +47,6 @@ app.use(passport.initialize())
 
 app.use('/', indexRouter)
 
+require('./dataServer')
 
 module.exports = app

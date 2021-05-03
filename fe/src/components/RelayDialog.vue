@@ -7,10 +7,25 @@
       <div class="mx-3">
         Relays
       </div>
-      <v-spacer />
       <v-btn icon @click="addRelay">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
+      <v-spacer />
+      <div class="d-flex" style="min-width: 200px">
+        <v-file-input
+          v-model="file"
+          label="File Input"
+          hide-details
+          outlined
+          dense
+        >
+          <template v-slot:append>
+            <v-btn icon @click="addFile">
+              <v-icon>mdi-upload</v-icon>
+            </v-btn>
+          </template>
+        </v-file-input>
+      </div>
     </v-card-title>
     <v-card-text>
       <v-list>
@@ -63,6 +78,8 @@ export default {
   },
   data () {
     return {
+      file: null,
+      zones: [],
       id: [],
       zoneName: ''
     }
@@ -73,6 +90,22 @@ export default {
     }
   },
   methods: {
+    addFile () {
+      console.log(this.file)
+      const reader = new FileReader()
+      reader.readAsText(this.file, 'utf-8')
+      reader.onload = evt => {
+        const text = evt.target.result
+        this.zones = text.split('\n')
+        console.log(text, this.zones)
+        const rt = []
+        this.zones.forEach((zone, idx) => {
+          const rz = zone.replace('\r', '')
+          rt.push({ idx: idx, name: rz, code: this.strEncodeUTF16(rz) })
+        })
+        this.items[this.currentId - 1].relay = rt
+      }
+    },
     addRelay () {
       const id = this.items[this.currentId - 1].relay.length
       this.items[this.currentId - 1].relay.push({

@@ -7,10 +7,25 @@
       <div class="mx-3">
         Zones
       </div>
-      <v-spacer />
       <v-btn icon @click="addChildren">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
+      <v-spacer />
+      <div class="d-flex" style="min-width: 200px">
+        <v-file-input
+          v-model="file"
+          label="File Input"
+          hide-details
+          outlined
+          dense
+        >
+          <template v-slot:append>
+            <v-btn icon @click="addFile">
+              <v-icon>mdi-upload</v-icon>
+            </v-btn>
+          </template>
+        </v-file-input>
+      </div>
     </v-card-title>
     <v-card-text>
       <v-list>
@@ -53,6 +68,7 @@
 
 <script>
 import { mapState } from 'vuex'
+// const fs = require('fs')
 
 export default {
   props: ['items'],
@@ -63,6 +79,8 @@ export default {
   },
   data () {
     return {
+      file: null,
+      zones: [],
       id: [],
       zoneName: ''
     }
@@ -73,6 +91,22 @@ export default {
     }
   },
   methods: {
+    addFile () {
+      console.log(this.file)
+      const reader = new FileReader()
+      reader.readAsText(this.file, 'utf-8')
+      reader.onload = evt => {
+        const text = evt.target.result
+        this.zones = text.split('\n')
+        console.log(text, this.zones)
+        const rt = []
+        this.zones.forEach((zone, idx) => {
+          const rz = zone.replace('\r', '')
+          rt.push({ idx: idx, name: rz, code: this.strEncodeUTF16(rz) })
+        })
+        this.items[this.currentId - 1].children = rt
+      }
+    },
     updateName () {
       const name = this.items[this.currentId - 1].name
       this.$axios.post('/api/updateName', { id: this.currentId, name: name, code: this.strEncodeUTF16(name) })
