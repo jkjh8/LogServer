@@ -43,9 +43,9 @@
             <v-pagination
               :value="page"
               :length="totalPage"
-              :total-visible="7"
+              :total-visible="10"
               color="teal lighten-3"
-              @input="$store.dispatch('logs/changePage', { page: $event })"
+              @input="next"
             />
           </div>
           <div style="width: 90px">
@@ -74,7 +74,8 @@ export default {
       page: state => state.logs.page,
       totalPage: state => state.logs.totalPage,
       logItems: state => state.logs.logItems,
-      itemsPerPage: state => state.logs.itemsPerPage
+      itemsPerPage: state => state.logs.itemsPerPage,
+      zones: state => state.zones.zones
     })
   },
   mounted () {
@@ -108,10 +109,17 @@ export default {
       this.$store.dispatch('logs/changePage', { page: 1 })
     },
     async closeChips (idx) {
-      const zones = this.$store.state.zones.zones
-      await zones.splice(idx, 1)
-      this.$store.dispatch('zones/updateZones', zones)
-      this.$store.dispatch('logs/changePage', { page: this.$store.state.logs.page, zones: zones })
+      await this.zones.splice(idx, 1)
+      this.$store.dispatch('zones/updateZones', this.zones)
+      this.$store.dispatch('logs/changePage', { page: this.$store.state.logs.page, zones: this.zones })
+    },
+    next (evt) {
+      console.log(this.zones)
+      if (this.zones.length > 0) {
+        this.$store.dispatch('logs/changePage', { page: evt, zones: this.zones.map(e => e.name).join(',') })
+      } else {
+        this.$store.dispatch('logs/changePage', { page: evt })
+      }
     }
   }
 }
