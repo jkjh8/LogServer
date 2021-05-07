@@ -30,14 +30,17 @@
         </v-data-table>
         <v-divider />
         <div class="d-flex justify-space-between mt-2">
-          <div class="mt-2">
-            <v-icon
-              v-show="false"
-              color="yellow"
-              @click="$store.dispatch('logs/changePage', { page: page })"
-            >
-              mdi-reload
-            </v-icon>
+          <div class="mt-2 d-flex" style="width: 150px">
+            <v-text-field
+              label="Goto"
+              outlined
+              dense
+              v-model="gotoIndex"
+              @keyup.enter="goto"
+            ></v-text-field>
+            <v-btn icon @click="goto">
+              <v-icon>mdi-send</v-icon>
+            </v-btn>
           </div>
           <div style="min-width: 400px">
             <v-pagination
@@ -100,7 +103,8 @@ export default {
         { text: 'Message', value: 'message' }
       ],
       pagePerItems: [5, 10, 20, 30, 40, 50],
-      search: ''
+      search: '',
+      gotoIndex: ''
     }
   },
   methods: {
@@ -120,6 +124,15 @@ export default {
       } else {
         this.$store.dispatch('logs/changePage', { page: evt })
       }
+    },
+    goto () {
+      if (this.gotoIndex >= this.totalPage) {
+        this.gotoIndex = this.totalPage
+      }
+      if (this.gotoIndex < 0) {
+        this.gotoIndex = 0
+      }
+      this.next(Number(this.gotoIndex))
     }
   }
 }
