@@ -82,6 +82,24 @@ module.exports.getlogcsv = async function(req, res) {
   })
 }
 
+module.exports.getbackup = async function (req, res) {
+  const docs = await dbLogs.find({})
+  const sheet = await logObjToSheet(docs)
+  const stream = await xlsx.stream.to_csv(sheet)
+  
+  res.setHeader("Content-disposition", "attachment; filename=log.csv")
+  res.set('Content-Type', 'text/csv')
+
+  stream.pipe(res).on('finish', () => {
+    console.log('download complete')
+  })
+}
+
+module.exports.dellog = async function (req, res) {
+  const result = await dbLogs.deleteMany({})
+  res.status(200).json({ result: 'success' })
+}
+
 module.exports.uploadlog = async function(req, res) {
   const data = new dbLogs({
     source: req.body.source,

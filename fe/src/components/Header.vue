@@ -69,6 +69,21 @@
           </template>
           <span>Download event log to CSV file</span>
         </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ml-1"
+              height="45px"
+              depressed
+              v-bind="attrs"
+              v-on="on"
+              @click="backup=true"
+            >
+              Backup
+            </v-btn>
+          </template>
+          <span>Backup all data to CSV file</span>
+        </v-tooltip>
       </div>
       <v-divider class="mx-3" inset vertical></v-divider>
       <div class="d-flex nowarp" v-if="user">
@@ -217,6 +232,9 @@
     <v-dialog max-width="800px" v-model="download">
       <CsvDownload @close="download=false" />
     </v-dialog>
+    <v-dialog max-width="800px" v-model="backup">
+      <Backup @close="backup=false" />
+    </v-dialog>
   </div>
 </template>
 
@@ -224,18 +242,21 @@
 import { mapState } from 'vuex'
 import ZonesSelect from '../components/zoneDialog'
 import CsvDownload from '../components/CsvDialog'
+import Backup from '../components/Backup'
 import { route } from '../mixins/route'
 
 export default {
   mixins: [route],
   components: {
     ZonesSelect,
-    CsvDownload
+    CsvDownload,
+    Backup
   },
   data: () => ({
     value: 'Home',
     search: '',
     download: false,
+    backup: false,
     dialog: false
   }),
   computed: {

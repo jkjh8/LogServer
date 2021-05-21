@@ -7,5 +7,7 @@ const log = require('../api/log')
 router.get('/api/getlog', log.getlog)
 router.get('/api/getlogcsv', log.getlogcsv)
 router.post('/api/uploadlog', log.uploadlog)
+router.get('/api/getbackup', log.getbackup)
+router.get('/api/dellog', log.dellog)
 
 module.exports = router
