@@ -107,7 +107,7 @@ module.exports.loginGoogle = function(req, res, next) {
 module.exports.user = function(req, res) {
   passport.authenticate('access', { session: false }, (err, user) => {
     if (err) { return res.status(403).json({ user: null }) }
-    if (user.block) { return res.status(403).json({ user: null }) }
+    if (!user.enable) { return res.status(403).json({ user: null }) }
     res.status(200).json({ user: user })
   })(req, res)
 }
@@ -128,7 +128,6 @@ module.exports.refresh = function(req, res) {
   })(req, res)
 }
 
-
 module.exports.logout = function(req, res) {
   req.logout()
   return res.status(200).json({
@@ -138,6 +137,22 @@ module.exports.logout = function(req, res) {
 }
 
 module.exports.users = async function(req, res) {
-  const users = await User.find({})
-  return res.status(200).json(users)
+  passport.authenticate('access', { session: false }, async (err, user) => {
+    if (err) { return res.status(403).json({ user: null }) }
+    if (!user.admin) { return res.status(403).json({ users: null }) }
+    const users = await User.find({})
+    res.status(200).json({ users: users })
+  })(req, res)
+}
+
+module.exports.update = async function(req, res) {
+  passport.authenticate('access', { session: false }, async (err, user) => {
+    if (err) { return res.status(403).json({ user: null }) }
+    if (!user.admin) { return res.status(403).json({ users: null }) }
+
+    console.log(req.body)
+    await User.updateOne({ email: req.body.email }, { $set: { admin: req.body.admin , enable: req.body.enable } })
+    const users = await User.find({})
+    res.status(200).json({ users: users })
+  })(req, res)
 }

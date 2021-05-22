@@ -7,7 +7,7 @@
       </v-card-title>
       <v-card-text>
         <div>
-          <!-- <v-btn
+          <v-btn
             outlined
             rounded
             width="100%"
@@ -24,7 +24,7 @@
                 </div>
               <div>Login with KAKAO</div>
             </div>
-          </v-btn> -->
+          </v-btn>
           <!--
           <v-btn
             class="mt-3"

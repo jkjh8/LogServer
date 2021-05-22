@@ -53,8 +53,10 @@
 import NameDialog from './NameDialog'
 import DataDialog from './DataDialog'
 import RelayDialog from './RelayDialog'
+import { users } from '../mixins/users'
 
 export default {
+  mixins: [users],
   components: {
     NameDialog, DataDialog, RelayDialog
   },

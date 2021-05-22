@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import LogView from '../views/LogView.vue'
 import Header from '../components/Header.vue'
 import Data from '../components/Data.vue'
+import Users from '../views/Users.vue'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,14 @@ const routes = [
     components: {
       layout: Header,
       default: Data
+    }
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    components: {
+      layout: Header,
+      default: Users
     }
   },
   {

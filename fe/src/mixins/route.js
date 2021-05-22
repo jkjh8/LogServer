@@ -8,9 +8,9 @@ export const route = {
       this.value = 'Home'
     },
     clickHome () {
+      this.$router.push('/')
       if (this.value !== 'Home') {
         this.value = 'Home'
-        this.$router.push('/')
       }
       this.$store.commit('zones/updateZones', [])
       this.$store.commit('zones/updateZonesName', [])
@@ -19,6 +19,10 @@ export const route = {
     gotoData () {
       this.$router.push('/data')
       this.value = 'Data'
+    },
+    gotoUsers () {
+      this.$router.push('/users')
+      this.value = 'Users'
     },
     logout () {
       this.$axios.get('/auth/logout').then(res => {

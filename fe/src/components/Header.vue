@@ -24,7 +24,7 @@
         </span>
       </div>
       <v-spacer />
-      <div>
+      <div class="d-flex justify-center">
         <v-btn
           class="mx-1"
           height="45px"
@@ -43,179 +43,10 @@
         >
           Zones
         </v-btn>
-        <v-btn
-          class="mx-1"
-          height="45px"
-          text
-          @click="gotoData"
-          :style="value === 'Data' ? 'font-weight: bold; color: black;': 'font-weigth: nomal; color: gray;'"
-        >
-          Data
-        </v-btn>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="ml-1"
-              height="45px"
-              depressed
-              color="orange"
-              dark
-              v-bind="attrs"
-              v-on="on"
-              @click="download=true"
-            >
-              Download
-            </v-btn>
-          </template>
-          <span>Download event log to CSV file</span>
-        </v-tooltip>
-        <v-tooltip bottom v-if="user && user.admin">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="ml-1"
-              height="45px"
-              depressed
-              v-bind="attrs"
-              v-on="on"
-              @click="backup=true"
-            >
-              Backup
-            </v-btn>
-          </template>
-          <span>Backup all data to CSV file</span>
-        </v-tooltip>
-        <v-tooltip bottom v-if="user && user.admin">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="ml-1"
-              height="45px"
-              depressed
-              v-bind="attrs"
-              v-on="on"
-              @click="users=true"
-            >
-              Users
-            </v-btn>
-          </template>
-          <span>Users</span>
-        </v-tooltip>
+        <Admin @data="gotoData" @backup="backup=true" @users="gotoUsers" @download="download=true" />
       </div>
       <v-divider class="mx-3" inset vertical></v-divider>
-      <div class="d-flex nowarp" v-if="user">
-        <v-menu
-          v-if="user.provider === 'kakao'"
-          bottom
-          rounded
-          min-width="200px"
-          offset-y
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              icon
-              x-large
-              v-on="on"
-            >
-              <v-avatar>
-                <v-avatar
-                  color="teal lighten-3"
-                  size="45"
-                >
-                  <img
-                    :src="user.kakao.profile.thumbnail_image_url"
-                    alt="User"
-                  >
-                </v-avatar>
-              </v-avatar>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-list-item-content class="justify-center">
-              <div class="mx-auto text-center">
-                <v-avatar
-                  color="teal lighten-3"
-                  size="60"
-                >
-                  <img
-                    :src="user.kakao.profile.thumbnail_image_url"
-                    alt="User"
-                  >
-                </v-avatar>
-                <h3 class="mt-3">{{ user.name }}</h3>
-                <p class="caption mt-1">{{ user.email }}</p>
-                <v-btn
-                  height="45px"
-                  depressed
-                  dark
-                  rounded
-                  color="teal lighten-3"
-                  @click="logout"
-                >
-                  Logout
-                </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-card>
-        </v-menu>
-
-        <v-menu
-          v-else
-          bottom
-          rounded
-          min-width="200px"
-          offset-y
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              icon
-              x-large
-              v-on="on"
-            >
-              <v-avatar>
-                <v-avatar
-                  color="teal lighten-3"
-                  size="45"
-                >
-                  <span class="white--text">{{ userNick }}</span>
-                </v-avatar>
-              </v-avatar>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-list-item-content class="justify-center">
-              <div class="mx-auto text-center">
-                <v-avatar
-                  color="teal lighten-3"
-                  size="60"
-                >
-                  <h2 class="white--text text-uppercase">{{ userNick }}</h2>
-                </v-avatar>
-                <p class="caption mt-1">{{ user.email }}</p>
-                <v-btn
-                  height="45px"
-                  depressed
-                  dark
-                  rounded
-                  color="teal lighten-3"
-                  @click="logout"
-                >
-                  Logout
-                </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-card>
-        </v-menu>
-      </div>
-      <div v-else>
-        <v-btn
-          height="45px"
-          depressed
-          dark
-          color="teal lighten-3"
-          @click="gotoLogin"
-        >
-          Login
-        </v-btn>
-      </div>
+      <LoginUser />
       <div class="d-flex mx-3">
         <v-text-field
           class="mt-1"
@@ -257,6 +88,8 @@
 import { mapState } from 'vuex'
 import ZonesSelect from '../components/zoneDialog'
 import CsvDownload from '../components/CsvDialog'
+import LoginUser from '../components/LoginUser'
+import Admin from '../components/Admin'
 import Backup from '../components/Backup'
 import { route } from '../mixins/route'
 
@@ -265,7 +98,9 @@ export default {
   components: {
     ZonesSelect,
     CsvDownload,
-    Backup
+    Backup,
+    LoginUser,
+    Admin
   },
   data: () => ({
     value: 'Home',
