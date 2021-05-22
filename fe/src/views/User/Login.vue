@@ -73,7 +73,13 @@
           <v-checkbox label="Remember Me"></v-checkbox>
           <a style="color: black; text-decoration: underline;">Forgot Your Password?</a>
         </div>
-        <div class="d-flex justify-end">
+        <div class="d-flex justify-end align-center">
+          <v-btn
+            text
+            to="/register"
+          >
+            Register
+          </v-btn>
           <v-btn
             class="font-weight-bold mr-3"
             rounded

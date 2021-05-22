@@ -18,7 +18,10 @@ module.exports.register = async function(req, res) {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    provider: 'local'
+    provider: 'local',
+    admin: false,
+    enable: false,
+    block: false
   })
   user.save((err, user) => {
     if (err) {
@@ -63,7 +66,9 @@ module.exports.loginKakao = async function(req, res, next) {
         roles: ['authenticated'],
         provider: 'kakao',
         kakao: profile.kakao_account,
-        block: false
+        block: false,
+        admin: false,
+        enable: false
       })
       console.log('1')
       user.save(err => {

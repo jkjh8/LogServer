@@ -62,6 +62,7 @@ export default {
         this.$cookie.set('accessToken', rtData.data.accessToken)
         console.log('access token refresh')
       }
+      console.log(this.user)
     }
   }
 }

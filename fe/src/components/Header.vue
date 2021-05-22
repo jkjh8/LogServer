@@ -69,7 +69,7 @@
           </template>
           <span>Download event log to CSV file</span>
         </v-tooltip>
-        <v-tooltip bottom>
+        <v-tooltip bottom v-if="user && user.admin">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               class="ml-1"
@@ -83,6 +83,21 @@
             </v-btn>
           </template>
           <span>Backup all data to CSV file</span>
+        </v-tooltip>
+        <v-tooltip bottom v-if="user && user.admin">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ml-1"
+              height="45px"
+              depressed
+              v-bind="attrs"
+              v-on="on"
+              @click="users=true"
+            >
+              Users
+            </v-btn>
+          </template>
+          <span>Users</span>
         </v-tooltip>
       </div>
       <v-divider class="mx-3" inset vertical></v-divider>
@@ -257,7 +272,8 @@ export default {
     search: '',
     download: false,
     backup: false,
-    dialog: false
+    dialog: false,
+    users: false
   }),
   computed: {
     appbarHeight () {
