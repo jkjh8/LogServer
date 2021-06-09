@@ -3,7 +3,7 @@ const moment = require('moment')
 const fs = require('fs')
 const xlsx = require('xlsx')
 const e = require('express')
-const zones = require('./Zone.json')
+const zones = require('../../Zone.json')
 
 module.exports.getlog = function(req, res) {
   const searchKeyword = req.query.search
