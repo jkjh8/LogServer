@@ -118,7 +118,8 @@ module.exports.uploadlog = async function(req, res) {
   })
 }
 
-module.exports.uploadlogId = async function(req, res) {
+module.exports.uploadlogId = async function (req, res) {
+  console.log(req.body)
   const data = new dbLogs({
     source: zones[req.body.source].name,
     priority: req.body.priority,
