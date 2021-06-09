@@ -3,6 +3,7 @@ const moment = require('moment')
 const fs = require('fs')
 const xlsx = require('xlsx')
 const e = require('express')
+const zones = require('./Zone.json')
 
 module.exports.getlog = function(req, res) {
   const searchKeyword = req.query.search
@@ -119,10 +120,10 @@ module.exports.uploadlog = async function(req, res) {
 
 module.exports.uploadlogId = async function(req, res) {
   const data = new dbLogs({
-    source: zones[req.body.source],
+    source: zones[req.body.source].name,
     priority: req.body.priority,
     category: req.body.category,
-    zones: zones[req.body.zones],
+    zones: zones[req.body.zones].name,
     message: req.body.message
   })
 
