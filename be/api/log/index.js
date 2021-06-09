@@ -116,3 +116,20 @@ module.exports.uploadlog = async function(req, res) {
     res.status(200).json({ status:'Success' })
   })
 }
+
+module.exports.uploadlogId = async function(req, res) {
+  const data = new dbLogs({
+    source: zones[req.body.source + 1],
+    priority: req.body.priority,
+    category: req.body.category,
+    zones: zones[req.body.zones + 1],
+    message: req.body.message
+  })
+
+  data.save((err) => {
+    if (err) {
+      return res.status(500).json({ status: 'Error' })
+    }
+    res.status(200).json({ status:'Success' })
+  })
+}
